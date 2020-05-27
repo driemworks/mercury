@@ -29,23 +29,38 @@ class DatabaseService {
         this.orbitdb = orbitdb;
     }
 
-    static async put(address, id, doc) {
-        const db = await this.orbitdb.docstore(address);
-        await db.load();
-        db.put({ _id: id, doc: doc });
-        console.log('persisted document to orbit db');
-    }
+    // static async put(address, id, doc) {
+    //     const db = await this.getDocstore(address);
+    //     db.put({ _id: id, doc: doc });
+    // }
 
     static async get(address, id) {
         console.log('address and id ' + address + ' | ' + id);
         try {
-            const db = await this.orbitdb.docstore(address);
-            await db.load();
+            const db = await this.getDocstore(address);
             return db.get(id);
         } catch (err) {
             console.log(err);
             return '';
         }
+    }
+
+    static async update(address, id, newJsonEntry) {
+        const db = await this.getDocstore(address);
+        console.log(newJsonEntry);
+        // try to get the json document
+        const existingDocument = await db.get(id);
+        console.log('do you exist? ' + JSON.stringify(existingDocument));
+        existingDocument.push(newJsonEntry);
+        console.log(existingDocument);
+        await db.put({ _id: id, doc: existingDocument });
+        return '';
+    }
+
+    static async getDocstore(address) {
+        const db = await this.orbitdb.docstore(address);
+        await db.load();
+        return db;
     }
 
 }

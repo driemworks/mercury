@@ -1,17 +1,22 @@
 var express = require('express'),
     app = express(),
-    port = process.env.PORT || 3000,
+    cors = require('cors'),
+    port = process.env.PORT || 4000,
     bodyParser = require('body-parser');
 
 // middleware logger
 var logger = function(req, res, next) {
-    console.log('LOGGED');
+    // console.log(req);
+    console.log('received request at ' + new Date());
     next();
 }
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(logger);
+// TODO security considerations
+// https://daveceddia.com/access-control-allow-origin-cors-errors-in-react-express/
+app.use(cors());
 
 var routes = require('./api/routes/routes');
 routes(app);

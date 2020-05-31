@@ -22,20 +22,11 @@ class DatabaseService {
                 pubsub: true
             }
         }); 
-        console.log('Initialized IPFS');
         const orbitdb = await OrbitDB.createInstance(ipfs);
-        // this.orbitdb = orbitdb;
-        console.log('Initialized orbitdb');
         this.orbitdb = orbitdb;
     }
 
-    // static async put(address, id, doc) {
-    //     const db = await this.getDocstore(address);
-    //     db.put({ _id: id, doc: doc });
-    // }
-
     static async get(address, id) {
-        console.log('address and id ' + address + ' | ' + id);
         try {
             const db = await this.getDocstore(address);
             return db.get(id);
@@ -47,12 +38,9 @@ class DatabaseService {
 
     static async update(address, id, newJsonEntry) {
         const db = await this.getDocstore(address);
-        console.log(newJsonEntry);
         // try to get the json document
         const existingDocument = await db.get(id);
-        console.log('do you exist? ' + JSON.stringify(existingDocument));
         existingDocument.push(newJsonEntry);
-        console.log(existingDocument);
         await db.put({ _id: id, doc: existingDocument });
         return '';
     }

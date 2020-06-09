@@ -40,8 +40,15 @@ class DatabaseService {
         const db = await this.getDocstore(address);
         // try to get the json document
         const existingDocument = await db.get(id);
-        existingDocument.push(newJsonEntry);
-        await db.put({ _id: id, doc: existingDocument });
+        // if it doesn't exist, create it!
+        if (!existingDocument[0]) {
+            await db.put({ _id: id, doc: [ newJsonEntry ] });    
+        } else {
+            const existingDocumentDoc = existingDocument[0].doc;
+            existingDocumentDoc.push(newJsonEntry);    
+            await db.put({ _id: id, doc: existingDocumentDoc });
+        }
+        
         return '';
     }
 

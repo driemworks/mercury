@@ -23,6 +23,7 @@
     "express-validator": "^6.5.0",
     "ipfs": "^0.44.0",
     "ipfs-http-client": "^44.1.0",
-    "orbit-db": "^0.24.1"
+    "orbit-db": "^0.24.1",
+    "sinon": "^9.0.2"
   }
 }

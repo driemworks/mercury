@@ -29,6 +29,7 @@ class DatabaseService {
     static async get(address, id) {
         try {
             const db = await this.getDocstore(address);
+            console.log('Retrieved document with id ' + id);
             return db.get(id);
         } catch (err) {
             console.log(err);
@@ -49,6 +50,7 @@ class DatabaseService {
             await db.put({ _id: id, doc: existingDocumentDoc });
         }
         
+        console.log('updated document with id ' + id);
         return '';
     }
 

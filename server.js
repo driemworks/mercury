@@ -11,8 +11,8 @@ var logger = function(req, res, next) {
     next();
 }
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+app.use(bodyParser.json({ limit: '50mb' }));
 app.use(logger);
 // TODO security considerations
 // https://daveceddia.com/access-control-allow-origin-cors-errors-in-react-express/

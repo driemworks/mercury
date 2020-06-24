@@ -15,6 +15,7 @@ exports.read = async (req, res) => {
     /update/<address>/<filename>
 */
 exports.update = async (req, res) => {
+    console.log(req.user);
     const address =  req.params.address;
     const id = req.params.id;
     const json = req.body;

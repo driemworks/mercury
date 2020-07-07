@@ -51,7 +51,7 @@ routes(app);
 
 app.listen(port, async () => {
     console.log('Mercury listening on port ' + port);
-    var DBService = require('./database');
+    var DBService = require('../database');
     await DBService.init();
     console.log('Initialized database');
 });

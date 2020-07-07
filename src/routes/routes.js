@@ -5,4 +5,6 @@ module.exports = function(app) {
     app.route('/read/:address/:id').get(controller.read);
     // update a (json) document by filename (id)
     app.route('/update/:address/:id').patch(controller.update);
+    // login/authenticate
+    app.route('/login').post(controller.login);
 }

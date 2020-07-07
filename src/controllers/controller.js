@@ -15,11 +15,17 @@ exports.read = async (req, res) => {
     /update/<address>/<filename>
 */
 exports.update = async (req, res) => {
-    console.log(req.user);
+    if (req.user.address !== req.params.address) {
+        res.sendStatus(403);
+    }
     const address =  req.params.address;
     const id = req.params.id;
     const json = req.body;
     await DatabaseService.update(address, id, json);
-    res.status(204);
-    res.json('');
+    res.sendStatus(204);
+}
+
+exports.login = async (req, res) => {
+    // TODO 
+    res.send("test");
 }

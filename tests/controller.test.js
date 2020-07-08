@@ -2,66 +2,105 @@ const chai = require('chai');
 const spies = require('chai-spies');
 chai.use(spies);
 const expect = chai.expect;
+const assert = require('assert');
 
 const sinon = require('sinon');
 
 const controller = require('../src/controllers/controller');
-
-const DatabaseService = {
-    get(address, id) {
-        return 'test';
-    }
-};
+const DatabaseService = require('../src/service/database');
+const EthService = require('../src/service/eth.service');
 
 describe("controller", () => {
-    const sandbox = sinon.createSandbox();
-    
-    beforeEach(() => {
-        sandbox.spy(DatabaseService);
-    });
 
-    afterEach(() => {
-        sandbox.restore();
-    });
     
     describe("read", () => {
-        // tests to create a record
-        it("should persist record", async () => {
-            let params = {
-                address: () => {},
-                id: () => {}
-            }
-            const addressStub = sinon.stub(params, "address").returns("address");
-            const idStub = sinon.stub(params, "id").returns("id");
-            let req = {};
-            let res = {
-                json: () => {}
-            };
-            const mock = sinon.mock(res);
-            mock.expects("json").once().withExactArgs("hey");
+        let getDocstoreContentStub;
 
-            controller.read(req, res);
-            expect(DatabaseService.get).to.have.been.called(1);
-            expect(addressStub.calledOnce).to.be.true;
-            expect(idStub.calledOnce).to.be.true;
-            mock.verify();
+        beforeEach(() => {
+            getDocstoreContentStub = sinon.stub(DatabaseService, "get");
+        });
+
+        afterEach(() => {
+            getDocstoreContentStub.restore();
+        });
+
+        it("should retrieve record from orbitdb", async () => {
+            getDocstoreContentStub.withArgs('1', '2').returns('test');
+            
+            let req = {
+                params: {
+                    address: '1',
+                    id: '2'
+                }
+            }
+            let res = {
+                json: sinon.spy()
+            };
+
+            await controller.read(req, res);
+
+            expect(res.json.calledOnce).to.be.true;
+            expect(res.json.firstCall.args[0]).to.equal('test');
         });
     });
 
-    // describe("read", (done) => {
-    // });
+    describe("update", () => {
+        it.only("should return 403 if the user does not own the docstore", async () => {
+            let req = {
+                user: {
+                    address: '1'
+                },
+                params: {
+                    address: '2'
+                }
+            };
 
-    // describe("login", () => {
-    //     it("should return JWT token", async () => {
-    //         let req = {};
-    //         let res = {
-    //             send: sinon.spy()
-    //         };
-    //         await controller.login(req, res);
-    //         // console.log(res.send());
-    //         expect(res.send.calledOnce).to.be.true;
-    //         expect(res.send.firstCall.args[0]).to.equal("test");
-    //     });
-    // });
+            let res = {
+                sendStatus: sinon.spy()
+            }
+
+            await controller.update(req, res);
+
+            expect(res.sendStatus.calledOnce).to.be.true;
+            expect(res.sendStatus.firstCall.args[0]).to.equal(403);
+        });
+
+        it("should create the document if it doesn not exist", () => {
+
+        });
+
+        it("should append to the document if it already exists", () => {
+
+        });
+    });
+
+    describe("login", () => {
+        let recoverEthAcctStub;
+
+        beforeEach(() => {
+            recoverEthAcctStub = sinon.stub(EthService, "recoverEthereumAccount");
+        });
+
+        afterEach(() => {
+            recoverEthAcctStub.restore();
+        });
+
+        it("should return JWT token", async () => {
+            recoverEthAcctStub.withArgs('2', '1').returns('test');
+            let req = {
+                body: {
+                    mnemonic: '1',
+                    password: '2'
+                }
+            }
+            let res = {
+                json: sinon.spy()
+            };
+            await controller.login(req, res);
+
+            expect(res.json.calledOnce).to.be.true;
+            expect(res.json.firstCall.args[0]).to.equal('test');
+        });
+    });
 
  });

@@ -2,13 +2,12 @@ const chai = require('chai');
 const spies = require('chai-spies');
 chai.use(spies);
 const expect = chai.expect;
-const assert = require('assert');
 
 const sinon = require('sinon');
 
-const controller = require('../src/controllers/controller');
-const DatabaseService = require('../src/service/database');
-const EthService = require('../src/service/eth.service');
+const controller = require('../../src/controllers/controller');
+const DatabaseService = require('../../src/service/database');
+const EthService = require('../../src/service/eth.service');
 
 describe("controller", () => {
 
@@ -45,7 +44,7 @@ describe("controller", () => {
     });
 
     describe("update", () => {
-        it.only("should return 403 if the user does not own the docstore", async () => {
+        it("should return 403 if the user does not own the docstore", async () => {
             let req = {
                 user: {
                     address: '1'

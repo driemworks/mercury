@@ -1,7 +1,18 @@
+// const lightwallet = require('eth-lightwallet');
+
 class EthService {
 
-    static recoverEthereumAccount(password, mnemonic) {
-        return 'TEST';
+    HD_PATH_STRING = "m/44'/60'/0'/0";
+
+    /**
+     * Verify that a message has been sent from a desired address
+     * @param {String} address The address to be verified
+     * @param {String} message The message used to verify the address
+     */
+    static verifyAddress(address, rawMessage, v, r, s) {
+        // const recoveredAddress = lightwallet.signing.recoverAddress(rawMessage, v, r, s);
+        // return address === recoveredAddress;
+        return true;
     }
 
 }

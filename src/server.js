@@ -6,14 +6,9 @@ var express = require('express'),
     jwt = require('jsonwebtoken');
 
 // middleware logger
-var logger = function(req, res, next) {
-    // console.log(req);
-    console.log('received request at ' + new Date());
-    next();
-}
-
+const logger = require('./middleware/logging');
 var accessTokenSecret = 'supersecretaccesstoken';
-var jwtFeatureFlag = true;
+var jwtFeatureFlag = false;
 
 // authentication middleware
 var authenticateJWT = (req, res, next) => {
@@ -35,9 +30,21 @@ var authenticateJWT = (req, res, next) => {
     }
 }
 
+// **************************************88
+// HERE I AM! REINSTALL ME MAYBE?
+// "eth-lightwallet": "^4.0.0",
+
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(logger);
+app.set('trust-proxy', 1);
+app.use(session({
+    secret: 'Test Secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
+}));
+
 if (jwtFeatureFlag === true) {
     app.use(authenticateJWT);
 }

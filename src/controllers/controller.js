@@ -1,8 +1,7 @@
 'use strict';
-
 const DatabaseService = require('../service/database');
-const EthereumService = require('../service/eth.service');
 const EthService = require('../service/eth.service');
+const jwt = require('jsonwebtoken');
 
 /*
     Read a resource by id (filename)
@@ -31,6 +30,18 @@ exports.update = async (req, res) => {
 }
 
 exports.login = async (req, res) => {
-    EthService.recoverEthereumAccount(req.body.password, req.body.mnemonic);
-    res.json("test");
+    // const isAddressVerified = EthService.verifyAddress(
+    //     req.params.address, req.body.msg, req.body.v, 
+    //     req.body.r, req.body.s
+    // );
+    const isAddressVerified = true;
+
+    if (isAddressVerified === true) {
+        const accessToken = jwt.sign({
+            address: req.params.address
+        });
+        res.json({ accessToken }); 
+    } else {
+        res.sendStatus(403);
+    }
 }

@@ -33,6 +33,13 @@ Mercury is a RESTful API which interacts with orbit-db to interact with data sto
 
 ## REST API
 
+### Login
+
+- create a signed message with v, r, and s values
+    - https://github.com/ConsenSys/eth-lightwallet#signingsignmsghashkeystore-pwderivedkey-msghash-signingaddress-hdpathstring
+
+- https://github.com/ConsenSys/eth-lightwallet#signingrecoveraddressrawmsg-v-r-s
+
 ### update 
 - URL: `host:port/update/{docstoreName}/{resourceId}`
 - Description: The update endpoint creates a document or updates an existing document identified by its docstore name and id.

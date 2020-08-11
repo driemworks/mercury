@@ -1,4 +1,4 @@
-// const lightwallet = require('eth-lightwallet');
+const lightwallet = require('eth-lightwallet');
 
 class EthService {
 
@@ -10,9 +10,12 @@ class EthService {
      * @param {String} message The message used to verify the address
      */
     static verifyAddress(address, rawMessage, v, r, s) {
-        // const recoveredAddress = lightwallet.signing.recoverAddress(rawMessage, v, r, s);
-        // return address === recoveredAddress;
-        return true;
+        try {
+            const recoveredAddress = lightwallet.signing.recoverAddress(rawMessage, v, r, s);
+            return address === recoveredAddress;
+        } catch (err) {
+            throw err;
+        }
     }
 
 }

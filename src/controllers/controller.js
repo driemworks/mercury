@@ -30,18 +30,21 @@ exports.update = async (req, res) => {
 }
 
 exports.login = async (req, res) => {
-    // const isAddressVerified = EthService.verifyAddress(
-    //     req.params.address, req.body.msg, req.body.v, 
-    //     req.body.r, req.body.s
-    // );
-    const isAddressVerified = true;
+    try {
+        const isAddressVerified = EthService.verifyAddress(
+            req.params.address, req.body.msg, 
+            req.body.v, req.body.r, req.body.s
+        );
 
-    if (isAddressVerified === true) {
-        const accessToken = jwt.sign({
-            address: req.params.address
-        });
-        res.json({ accessToken }); 
-    } else {
-        res.sendStatus(403);
+        if (isAddressVerified === true) {
+            const accessToken = jwt.sign({
+                address: req.params.address
+            });
+            res.json({ accessToken }); 
+        } else {
+            res.sendStatus(403);
+        }
+    } catch (err) {
+        res.status(400).send(err.toString());
     }
 }

@@ -16,6 +16,7 @@ exports.read = async (req, res) => {
     Create a resource if it does not exist
 */
 exports.update = async (req, res) => {
+    // TODO - this should encrypt the data in the request.
     console.log(req.user.address);
     console.log(req.params.address);
     if (req.user.address !== req.params.address) {
@@ -36,15 +37,19 @@ exports.login = async (req, res) => {
             req.body.v, req.body.r, req.body.s
         );
 
+        console.log('hi');
         if (isAddressVerified === true) {
+
             const accessToken = jwt.sign({
                 address: req.params.address
-            });
+            }, 'superSecretKey');
+            console.log('generated token');
             res.json({ accessToken }); 
         } else {
             res.sendStatus(403);
         }
     } catch (err) {
+        console.log(err);
         res.status(400).send(err.toString());
     }
 }

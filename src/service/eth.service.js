@@ -1,4 +1,5 @@
 const lightwallet = require('eth-lightwallet');
+const ethjs = require('ethereumjs-utils');
 
 class EthService {
 
@@ -11,9 +12,12 @@ class EthService {
      */
     static verifyAddress(address, rawMessage, v, r, s) {
         try {
-            const recoveredAddress = lightwallet.signing.recoverAddress(rawMessage, v, r, s);
-            return address === recoveredAddress;
+            const msgHash = ethjs.keccak(rawMessage);
+            const pub = ethjs.ecrecover(msgHash, v, r.data, s.data);
+            const recoveredAddressString = '0x' + ethjs.pubToAddress(pub).toString('hex');
+            return address === recoveredAddressString;
         } catch (err) {
+            console.log(err);
             throw err;
         }
     }

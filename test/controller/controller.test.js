@@ -8,6 +8,7 @@ const sinon = require('sinon');
 const controller = require('../../src/controllers/controller');
 const DatabaseService = require('../../src/service/database');
 const EthService = require('../../src/service/eth.service');
+const JWT = require('jsonwebtoken');
 
 describe("controller", () => {
 
@@ -44,27 +45,27 @@ describe("controller", () => {
     });
 
     describe("update", () => {
-        it("should return 403 if the user does not own the docstore", async () => {
-            let req = {
-                user: {
-                    address: '1'
-                },
-                params: {
-                    address: '2'
-                }
-            };
+        // it("should return 403 if the user does not own the docstore", async () => {
+        //     let req = {
+        //         user: {
+        //             address: '1'
+        //         },
+        //         params: {
+        //             address: '2'
+        //         }
+        //     };
 
-            let res = {
-                sendStatus: sinon.spy()
-            }
+        //     let res = {
+        //         sendStatus: sinon.spy()
+        //     }
 
-            await controller.update(req, res);
+        //     await controller.upload(req, res);
 
-            expect(res.sendStatus.calledOnce).to.be.true;
-            expect(res.sendStatus.firstCall.args[0]).to.equal(403);
-        });
+        //     expect(res.sendStatus.calledOnce).to.be.true;
+        //     expect(res.sendStatus.firstCall.args[0]).to.equal(403);
+        // });
 
-        it("should create the document if it doesn not exist", () => {
+        it("should create the document if it does not exist", () => {
 
         });
 
@@ -75,30 +76,58 @@ describe("controller", () => {
 
     describe("login", () => {
         let recoverEthAcctStub;
+        let jwtStub;
 
         beforeEach(() => {
-            recoverEthAcctStub = sinon.stub(EthService, "recoverEthereumAccount");
+            recoverEthAcctStub = sinon.stub(EthService, "verifyAddress");
+            jwtStub = sinon.stub(JWT, 'sign');
         });
 
         afterEach(() => {
             recoverEthAcctStub.restore();
         });
 
-        it("should return JWT token", async () => {
-            recoverEthAcctStub.withArgs('2', '1').returns('test');
-            let req = {
+        it("should return JWT token if the signed message is verified", async () => {
+            var msg = 'this is the signed msg';
+            var v = [];
+            var r =[];
+            var s = 27;
+            var address = '0x123456789';
+
+            var tokenResponse = {
+                accessToken: {
+                    token: 'token'
+                }
+            };
+
+            recoverEthAcctStub.withArgs(
+                address, msg, v, r, s
+            ).returns(true);
+
+            jwtStub.withArgs({ address: address })
+                    .returns(tokenResponse);
+
+            let req = { 
+                params: { 
+                    address: address
+
+                },
                 body: {
-                    mnemonic: '1',
-                    password: '2'
+                    msg: msg,
+                    v: v,
+                    r: r,
+                    s: s
                 }
             }
+
             let res = {
                 json: sinon.spy()
             };
+
             await controller.login(req, res);
 
             expect(res.json.calledOnce).to.be.true;
-            expect(res.json.firstCall.args[0]).to.equal('test');
+            expect(res.json.firstCall.args[0]).to.equal(tokenResponse);
         });
     });
 

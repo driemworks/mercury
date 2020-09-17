@@ -1,4 +1,4 @@
-const IPFS = require('ipfs-http-client');
+const IPFS = require('ipfs');
 const OrbitDB = require('orbit-db');
 
 class DatabaseService {
@@ -22,8 +22,11 @@ class DatabaseService {
                 pubsub: true
             }
         }); 
-        const orbitdb = await OrbitDB.createInstance(ipfs);
-        this.orbitdb = orbitdb;
+        await ipfs.on('ready', async() => {
+            const orbitdb = await OrbitDB.createInstance(ipfs);
+            this.orbitdb = orbitdb;
+        });
+        
     }
 
     static async get(address, id) {
@@ -41,16 +44,15 @@ class DatabaseService {
         const db = await this.getDocstore(address);
         // try to get the json document
         const existingDocument = await db.get(id);
-        // if it doesn't exist, create it!
+        // if it doesn't exist, create it!)
         if (!existingDocument[0]) {
+            console.log('dne');
             await db.put({ _id: id, doc: [ newJsonEntry ] });    
         } else {
             const existingDocumentDoc = existingDocument[0].doc;
             existingDocumentDoc.push(newJsonEntry);    
             await db.put({ _id: id, doc: existingDocumentDoc });
         }
-        
-        console.log('updated document with id ' + id);
         return '';
     }
 

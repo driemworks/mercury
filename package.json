@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "mocha tests/**/* --exit"
+    "test": "mocha test/**/* --exit"
   },
   "author": "Tony Riemer",
   "license": "MIT",
@@ -19,17 +19,19 @@
     "nodemon": "^2.0.4"
   },
   "dependencies": {
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "eth-lightwallet": "^4.0.0",
     "ethereumjs-utils": "^5.2.5",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "express-validator": "^6.5.0",
-    "ipfs": "^0.44.0",
-    "ipfs-http-client": "^44.1.0",
+    "ipfs": "^0.34.4",
+    "ipfs-http-client": "^34.0.0",
     "jsonwebtoken": "^8.5.1",
-    "orbit-db": "^0.24.1",
+    "morgan": "^1.10.0",
+    "orbit-db": "^0.20.1",
     "sinon": "^9.0.2",
     "web3": "^1.2.11",
     "webpack-dev-server": "^3.11.0"

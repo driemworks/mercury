@@ -11,25 +11,24 @@ exports.read = async (req, res) => {
     res.json(dbResponse);
 }
 
+exports.query = async (req, res) => {
+    console.log('TO BE IMPLEMENTED');
+    res.json('Not yet implemented');
+}
+
 /*
     Update an existing resource if it exists
     Create a resource if it does not exist
 */
-exports.update = async (req, res) => {
-    // TODO - this should encrypt the data in the request.
-    console.log(req.user.address);
-    console.log(req.params.address);
-    if (req.user.address !== req.params.address) {
-        res.sendStatus(403);
-    } else {
-        const address =  req.params.address;
-        const id = req.params.id;
-        const json = req.body;
-        await DatabaseService.update(address, id, json);
-        res.sendStatus(204);
-    }
+exports.upload = async (req, res) => {
+    const address =  req.params.address;
+    const id = req.params.id;
+    const json = req.body;
+    await DatabaseService.update(address, id, json);
+    res.sendStatus(204);
 }
 
+// maybe should add yup: request body validation
 exports.login = async (req, res) => {
     try {
         const isAddressVerified = EthService.verifyAddress(
@@ -37,19 +36,19 @@ exports.login = async (req, res) => {
             req.body.v, req.body.r, req.body.s
         );
 
-        console.log('hi');
-        if (isAddressVerified === true) {
+        console.log(isAddressVerified);
 
-            const accessToken = jwt.sign({
-                address: req.params.address
-            }, 'superSecretKey');
-            console.log('generated token');
+        if (isAddressVerified === true) {
+            // jwt token that expires in 24 hours
+            const accessToken = jwt.sign({ address: req.params.address }, 
+                'supersecretaccesstoken', { expiresIn: '1d' });
+            console.log('**** ' + accessToken);
             res.json({ accessToken }); 
         } else {
             res.sendStatus(403);
         }
     } catch (err) {
         console.log(err);
-        res.status(400).send(err.toString());
+        // res.status(400).send(err.toString());
     }
 }

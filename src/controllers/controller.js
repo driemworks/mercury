@@ -32,23 +32,18 @@ exports.upload = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const isAddressVerified = EthService.verifyAddress(
-            req.params.address, req.body.msg, 
-            req.body.v, req.body.r, req.body.s
+            req.params.address, req.body.signature, req.body.message
         );
-
-        console.log(isAddressVerified);
-
         if (isAddressVerified === true) {
             // jwt token that expires in 24 hours
             const accessToken = jwt.sign({ address: req.params.address }, 
                 'supersecretaccesstoken', { expiresIn: '1d' });
-            console.log('**** ' + accessToken);
             res.json({ accessToken }); 
         } else {
             res.sendStatus(403);
         }
     } catch (err) {
-        console.log(err);
-        // res.status(400).send(err.toString());
+        console.error(err);
+        res.status(400).send();
     }
 }

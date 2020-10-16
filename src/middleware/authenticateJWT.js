@@ -4,7 +4,6 @@ var secret = 'supersecretaccesstoken';
 var authenticateJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (authHeader) {
-        console.log(authHeader);
         const token = authHeader;
         jwt.verify(token, secret, (err, user) => {
             if (err) {

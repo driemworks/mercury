@@ -27,11 +27,10 @@
     "ethereumjs-utils": "^5.2.5",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "ipfs": "^0.34.4",
-    "ipfs-http-client": "^34.0.0",
+    "ipfs": "^0.50.2",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
-    "orbit-db": "^0.20.1",
+    "orbit-db": "^0.26.0",
     "sinon": "^9.0.2",
     "web3": "^1.2.11",
     "webpack-dev-server": "^3.11.0"

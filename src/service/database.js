@@ -14,25 +14,14 @@ class DatabaseService {
     }
 
     static async init() {
-        const ipfs = new IPFS({
-            // host: process.env.NODE_ENV === 'development' ? '127.0.0.1' :'iris-app.de',
-            // port: process.env.NODE_ENV === 'development' ? 5001 : 443,
-            // protocol: process.env.NODE_ENV === 'development' ? 'http' : 'https'
-            EXPERIMENT: {
-                pubsub: true
-            }
-        }); 
-        await ipfs.on('ready', async() => {
-            const orbitdb = await OrbitDB.createInstance(ipfs);
-            this.orbitdb = orbitdb;
-        });
-        
+        const ipfs = await IPFS.create();
+        const orbitdb = await OrbitDB.createInstance(ipfs);
+        this.orbitdb = orbitdb;
     }
 
     static async get(address, id) {
         try {
             const db = await this.getDocstore(address);
-            console.log('Retrieved document with id ' + id);
             return db.get(id);
         } catch (err) {
             console.log(err);
@@ -46,7 +35,6 @@ class DatabaseService {
         const existingDocument = await db.get(id);
         // if it doesn't exist, create it!)
         if (!existingDocument[0]) {
-            console.log('dne');
             await db.put({ _id: id, doc: [ newJsonEntry ] });    
         } else {
             const existingDocumentDoc = existingDocument[0].doc;

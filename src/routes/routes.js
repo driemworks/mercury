@@ -2,12 +2,10 @@
 var authenticateJWT = require('../middleware/authenticateJWT');
 module.exports = function(app) {
     var controller = require('../controllers/controller');
-    // retrieve a document by filename (id)
-    app.route('/read/:address/:id').get(authenticateJWT, controller.read);
     // retrieve all doc ids in the user's docstore
-    app.route('/query/:address').get(authenticateJWT, controller.query);
+    app.route('/:address/events/:limit').get(authenticateJWT, controller.retrieveEvent);
     // update a (json) document by filename (id)
-    app.route('/upload/:address/:id').post(authenticateJWT, controller.upload);
+    app.route('/:address/events').post(authenticateJWT, controller.addEvent);
     // login/authenticate
-    app.route('/login/:address').post(controller.login);
+    app.route('/:address/login').post(controller.login);
 }

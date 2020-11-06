@@ -1,4 +1,5 @@
 const IPFS = require('ipfs');
+const { add } = require('ipfs/src/core/components');
 const OrbitDB = require('orbit-db');
 
 class DatabaseService {
@@ -19,33 +20,22 @@ class DatabaseService {
         this.orbitdb = orbitdb;
     }
 
-    static async get(address, id) {
-        try {
-            const db = await this.getDocstore(address);
-            return db.get(id);
-        } catch (err) {
-            console.log(err);
-            return '';
-        }
+    static async addEvent(address, event) {
+        const db = await this.initFeed(address);
+        const hash = await db.add(event);
+        return hash;
     }
 
-    static async update(address, id, newJsonEntry) {
-        const db = await this.getDocstore(address);
-        // try to get the json document
-        const existingDocument = await db.get(id);
-        // if it doesn't exist, create it!)
-        if (!existingDocument[0]) {
-            await db.put({ _id: id, doc: [ newJsonEntry ] });    
-        } else {
-            const existingDocumentDoc = existingDocument[0].doc;
-            existingDocumentDoc.push(newJsonEntry);    
-            await db.put({ _id: id, doc: existingDocumentDoc });
-        }
-        return '';
+    static async retrieveEvents(address, limit) {
+        const db = await this.initFeed(address);
+        const allEvents = db.iterator({ limit: limit })
+            .collect()
+            .map((e) => e.payload.value);
+        return allEvents;
     }
 
-    static async getDocstore(address) {
-        const db = await this.orbitdb.docstore(address);
+    static async initFeed(address) {
+        const db = await this.orbitdb.feed(address);
         await db.load();
         return db;
     }

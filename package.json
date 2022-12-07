@@ -27,7 +27,7 @@
     "ethereumjs-utils": "^5.2.5",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "ipfs": "^0.50.2",
+    "ipfs": "^0.65.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "orbit-db": "^0.26.0",

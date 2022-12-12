@@ -25,7 +25,7 @@
     "cors": "^2.8.5",
     "eth-lightwallet": "^4.0.0",
     "ethereumjs-utils": "^5.2.5",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-session": "^1.17.1",
     "ipfs": "^0.50.2",
     "jsonwebtoken": "^8.5.1",
